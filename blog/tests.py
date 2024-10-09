@@ -10,6 +10,8 @@ class TestView(TestCase):
 
         self.user_trump = User.objects.create_user(username='trump', password='somepassword')
         self.user_obama = User.objects.create_user(username='obama', password='somepassword')
+        self.user_obama.is_staff = True
+        self.user_obama.save()
 
         self.category_programming = Category.objects.create(name='programming', slug='programming')
         self.category_music = Category.objects.create(name='music', slug='music')
@@ -174,8 +176,12 @@ class TestView(TestCase):
         # 로그인 하지 않으면 status code가 200이면 안된다!
         response = self.client.get('/blog/create_post/')
         self.assertNotEqual(response.status_code, 200)
-        # 로그인을 한다.
+
         self.client.login(username='trump', password='somepassword')
+        response = self.client.get('/blog/create_post/')
+        self.assertNotEqual(response.status_code, 200)
+        # staff인 obama로 로그인 한다.
+        self.client.login(username='obama', password='somepassword')
 
         response = self.client.get('/blog/create_post/')
         self.assertEqual(response.status_code, 200)
@@ -194,4 +200,4 @@ class TestView(TestCase):
         )
         last_post = Post.objects.last()
         self.assertEqual(last_post.title, "Post Form 만들기")
-        self.assertEqual(last_post.author.username, 'trump')
+        self.assertEqual(last_post.author.username, 'obama')

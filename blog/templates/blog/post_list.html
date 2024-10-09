@@ -2,6 +2,15 @@
 
 {% block main_area %}
 
+                {% if user.is_authenticated%}
+                    {% if user.is_superuser or user.is_staff %}
+                        <div style="text-align: right;">
+                            <a href="/blog/create_post/" class="btn btn-secondary"><i class="fas fa-pen"></i>&nbsp;&nbsp;New Post</a>
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+
                 <h1>
                     Blog
                     {% if category %}<span class="badge text-bg-secondary">{{ category }}</span>{% endif %}
