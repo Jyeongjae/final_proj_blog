@@ -6,14 +6,26 @@ from .models import Post
 class TestView(TestCase):
     def setUp(self):
         self.client = Client()
+
+    def navbar_test(self, soup):
+        navbar = soup.nav
+        self.assertIn('Blog', navbar.text)
+        self.assertIn('About Me', navbar.text)
+        logo_btn = navbar.find('a', text='Do It Django')
+        self.assertEqual(logo_btn.attrs['href'], '/')
+        home_btn = navbar.find('a', text='Home')
+        self.assertEqual(home_btn.attrs['href'], '/')
+        blog_btn = navbar.find('a', text='Blog')
+        self.assertEqual(blog_btn.attrs['href'], '/blog/')
+        about_me_btn = navbar.find('a', text='About Me')
+        self.assertEqual(about_me_btn.attrs['href'], '/about_me/')
+
     def test_post_list(self):
         response = self.client.get('/blog/')
         self.assertEqual(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
         self.assertEqual(soup.title.text, 'Blog')
-        navbar = soup.nav
-        self.assertIn('Blog', navbar.text)
-        self.assertIn('About Me', navbar.text)
+        self.navbar_test(soup)
         self.assertEqual(Post.objects.count(), 0)
         main_area = soup.find('div', id='main-area')
         self.assertIn('아직 게시물이 없습니다', main_area.text)
@@ -48,9 +60,7 @@ class TestView(TestCase):
         self.assertEqual(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
         # 1.2  post_list 페이지와 똑같은 네비게이션 바가 있다.
-        navbar = soup.nav  # beautifulsoup를 이용하면 간단히 페이지의 태그 요소에 접근이 가능합니다.
-        self.assertIn('Blog', navbar.text)
-        self.assertIn('About Me', navbar.text)
+        self.navbar_test(soup)
         # 1.3  첫 번째 post의 title이 브라우저 탭에 표기되는 페이지 title에 있다.
         self.assertIn(post_001.title, soup.title.text)
         # 1.4  첫 번째 post의 title이 post-area에 있다.
