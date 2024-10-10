@@ -13,6 +13,12 @@
             <span class="badge text-bg-secondary">미분류</span>
         {% endif %}
 
+        {% if user.is_authenticated and user == post.author %}
+            <div style="text-align: right;">
+                <a href="/blog/create_post/" class="btn btn-secondary"><i class="fas fa-pen"></i>&nbsp;&nbsp;Edit Post</a>
+            </div>
+        {% endif %}
+
         <!-- Title -->
         <h1 class="mt-4">{{ post.title }}</h1>
         <h5 class="text-muted">{{ post.hook_text }}</h5>
@@ -23,6 +29,7 @@
           <a href="#">{{ post.author | upper }}</a>
         </p>
         <hr>
+
         <!-- Date/Time -->
         <p>Posted on {{ post.created_at }}</p>
         <hr>
