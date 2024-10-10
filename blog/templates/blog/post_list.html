@@ -13,6 +13,7 @@
 
                 <h1>
                     Blog
+                    {% if search_info %}<small class="text-muted">{{ search_info }}</small>{% endif %}
                     {% if category %}<span class="badge text-bg-secondary">{{ category }}</span>{% endif %}
                     {% if tag %}<span class="badge rounded-pill text-bg-light"><i class="fas fa-tags"></i>{{ tag }} ({{ tag.post_set.count }})</span>{% endif %}
                 </h1>
