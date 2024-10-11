@@ -20,6 +20,15 @@
             <div class="col-lg-6 text-light">
                 <h1 class="mt-5">Do It Django</h1>
                 <p>파이썬 진영의 가장 대표적인 웹프레임워크 중 하나인 django를 이용하여 여러분만의 블로그 사이트를 만들어보세요.</p>
+                <h2 class="text-light">Today Word!</h2>
+                {% for word in recent_word %}
+                    <div class="card mt-1">
+                        <div class="card-body">
+                            <h1><a href="{{ word.get_absolute_url }}" class="text-decoration-none text-dark">{{ word.title }}</a></h1>
+                            <h4><a class="text-decoration-none text-dark">{{ word.get_content_markdown | truncatewords_html:45 | safe }}</a></h4>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
             <div class="col-lg-5 mt-5">
                 <h2 class="text-light">Blog - Recent posts</h2>
@@ -41,6 +50,11 @@
         </div>
     </div>
 </section>
+
+<section>
+
+</section>
+
 <div class="fixed-bottom">
     {% include 'blog/footer.html' %}
 </div>

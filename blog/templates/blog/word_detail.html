@@ -1,0 +1,75 @@
+{% extends 'today_word/base.html' %}
+
+{% block head_title %}
+    {{ word.title }} - Today Word
+{% endblock %}
+
+{% block main_area %}
+
+    <div id="post-area">
+
+        {% if word.category %}
+            <span class="badge text-bg-secondary">{{ word.category }}</span>
+        {% else %}
+            <span class="badge text-bg-secondary">미분류</span>
+        {% endif %}
+
+        {% if user.is_authenticated and user == word.author %}
+            <div style="text-align: right;">
+                <a href="/today_word/update_post/{{ word.pk }}/" class="btn btn-secondary"><i class="fas fa-pen"></i>&nbsp;&nbsp;Edit Word</a>
+            </div>
+        {% endif %}
+
+        <!-- Title -->
+        <h1 class="mt-4">{{ word.title }}</h1>
+        <h5 class="text-muted">{{ word.hook_text }}</h5>
+
+        <!-- Author -->
+        <p class="lead">
+          by
+          <a href="#">{{ word.author | upper }}</a>
+        </p>
+        <hr>
+
+        <!-- Date/Time -->
+        <p>Posted on {{ word.created_at }}</p>
+        <hr>
+        <!-- Preview Image -->
+        {% if word.head_image %}
+          <img class="img-fluid rounded" src="{{ word.head_image.url }}" alt="{{ word.title }} head_image">
+        {% else %}
+          <img class="img-fluid rounded" src="https://picsum.photos/seed/{{ word.id }}/800/200" alt="random_image">
+        {% endif %}
+
+        <hr>
+        <!-- Post Content -->
+        <p>{{ word.get_content_markdown | safe }}</p>
+
+        {% if word.tags.exists %}
+            <i class="fas fa-tags"></i>
+            {% for tag in word.tags.all %}
+                <a href="{{ tag.get_absolute_url }}"><span class="badge rounded-pill text-bg-light">{{ tag }}</span></a>
+            {% endfor %}
+            <br/>
+            <br/>
+        {% endif %}
+
+        {% if word.file_upload %}
+                <a href="{{ word.file_upload.url }}" class="btn btn-outline-dark" role="button" download>
+                    Download:
+                    {% if word.get_file_ext == 'csv' %}
+                        <i class="fas fa-file-csv"></i>
+                    {% elif word.get_file_ext == 'xlsx' or word.get_file_ext == 'xls' %}
+                        <i class="fas fa-file-excel"></i>
+                    {% elif word.get_file_ext == 'docx' or word.get_file_ext == 'doc' %}
+                        <i class="fas fa-file-word"></i>
+                    {% else %}
+                        <i class="far fa-file"></i>
+                    {% endif %}
+                    {{ word.get_file_name }}
+                </a>
+        {% endif %}
+        <hr>
+    </div>
+
+{% endblock %}

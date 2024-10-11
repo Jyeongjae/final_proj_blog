@@ -58,7 +58,7 @@ class TestView(TestCase):
         home_btn = navbar.find('a', text='Home')
         self.assertEqual(home_btn.attrs['href'], '/')
         blog_btn = navbar.find('a', text='Blog')
-        self.assertEqual(blog_btn.attrs['href'], '/blog/')
+        self.assertEqual(blog_btn.attrs['href'], '/today_word/')
         about_me_btn = navbar.find('a', text='About Me')
         self.assertEqual(about_me_btn.attrs['href'], '/about_me/')
 
@@ -79,7 +79,7 @@ class TestView(TestCase):
         # Post가 있는 경우
         self.assertEqual(Post.objects.count(), 3)
 
-        response = self.client.get('/blog/')
+        response = self.client.get('/today_word/')
         self.assertEqual(response.status_code, 200)
 
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -120,14 +120,14 @@ class TestView(TestCase):
         Post.objects.all().delete()
         self.assertEqual(Post.objects.count(), 0)
 
-        response = self.client.get('/blog/')
+        response = self.client.get('/today_word/')
         soup = BeautifulSoup(response.content, 'html.parser')
 
         main_area = soup.find('div', id='main-area')  # id가 main-area인 div태그를 찾습니다.
         self.assertIn('아직 게시물이 없습니다', main_area.text)
 
     def test_post_detail(self):
-        self.assertEqual(self.post_001.get_absolute_url(), '/blog/1/')
+        self.assertEqual(self.post_001.get_absolute_url(), '/today_word/1/')
 
         response = self.client.get(self.post_001.get_absolute_url())
         self.assertEqual(response.status_code, 200)
@@ -186,16 +186,16 @@ class TestView(TestCase):
 
     def test_create_post(self):
         # 로그인 하지 않으면 status code가 200이면 안된다!
-        response = self.client.get('/blog/create_post/')
+        response = self.client.get('/today_word/create_post/')
         self.assertNotEqual(response.status_code, 200)
 
         self.client.login(username='trump', password='somepassword')
-        response = self.client.get('/blog/create_post/')
+        response = self.client.get('/today_word/create_post/')
         self.assertNotEqual(response.status_code, 200)
         # staff인 obama로 로그인 한다.
         self.client.login(username='obama', password='somepassword')
 
-        response = self.client.get('/blog/create_post/')
+        response = self.client.get('/today_word/create_post/')
         self.assertEqual(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
 
@@ -207,7 +207,7 @@ class TestView(TestCase):
         self.assertTrue(tag_str_input)
 
         self.client.post(
-            '/blog/create_post/',
+            '/today_word/create_post/',
             {
                 'title': 'Post Form 만들기',
                 'content': "Post Form 페이지를 만듭시다.",
@@ -224,7 +224,7 @@ class TestView(TestCase):
         self.assertEqual(Tag.objects.count(), 5)
 
     def test_update_post(self):
-        update_post_url = f'/blog/update_post/{self.post_003.pk}/'
+        update_post_url = f'/today_word/update_post/{self.post_003.pk}/'
         # 로그인 하지 않은 경우
         response = self.client.get(update_post_url)
         self.assertNotEqual(response.status_code, 200)
@@ -330,8 +330,8 @@ class TestView(TestCase):
         self.assertFalse(comment_area.find('a', id='comment-2-update-btn'))
         comment_001_update_btn = comment_area.find('a', id='comment-1-update-btn')
         self.assertIn('edit', comment_001_update_btn.text)
-        self.assertEqual(comment_001_update_btn.attrs['href'], '/blog/update_comment/1/')
-        response = self.client.get('/blog/update_comment/1/')
+        self.assertEqual(comment_001_update_btn.attrs['href'], '/today_word/update_comment/1/')
+        response = self.client.get('/today_word/update_comment/1/')
         self.assertEqual(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
         self.assertEqual('Edit Comment - Blog', soup.title.text)
@@ -339,7 +339,7 @@ class TestView(TestCase):
         content_textarea = update_comment_form.find('textarea', id='id_content')
         self.assertIn(self.comment_001.content, content_textarea.text)
         response = self.client.post(
-            f'/blog/update_comment/{self.comment_001.pk}/',
+            f'/today_word/update_comment/{self.comment_001.pk}/',
             {
                 'content': "오바마의 댓글을 수정합니다.",
             },
@@ -387,9 +387,9 @@ class TestView(TestCase):
         self.assertIn('Delete', really_delete_btn_002.text)
         self.assertEqual(
             really_delete_btn_002.attrs['href'],
-            '/blog/delete_comment/2/'
+            '/today_word/delete_comment/2/'
         )
-        response = self.client.get('/blog/delete_comment/2/', follow=True)
+        response = self.client.get('/today_word/delete_comment/2/', follow=True)
         self.assertEqual(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
         self.assertIn(self.post_001.title, soup.title.text)
@@ -404,7 +404,7 @@ class TestView(TestCase):
             content='Hello World. We are the world.',
             author=self.user_trump
         )
-        response = self.client.get('/blog/search/파이썬/')
+        response = self.client.get('/today_word/search/파이썬/')
         self.assertEqual(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
         main_area = soup.find('div', id='main-area')

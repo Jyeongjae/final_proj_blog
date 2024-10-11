@@ -1,0 +1,92 @@
+{% extends 'today_word/base.html' %}
+
+{% block main_area %}
+
+{% if user.is_authenticated%}
+    {% if user.is_superuser or user.is_staff %}
+        <div style="text-align: right;">
+            <a href="/today_word/create_post/" class="btn btn-secondary"><i class="fas fa-pen"></i>&nbsp;&nbsp;New Word</a>
+        </div>
+    {% endif %}
+{% endif %}
+
+<h1>
+    Today Word
+    {% if search_info %}<small class="text-muted">{{ search_info }}</small>{% endif %}
+    {% if category %}<span class="badge text-bg-secondary">{{ category }}</span>{% endif %}
+    {% if tag %}<span class="badge rounded-pill text-bg-light"><i class="fas fa-tags"></i>{{ tag }}</span>{% endif %}
+</h1>
+
+{% if word_list.exists %}
+    {% for w in word_list %}
+    <!-- Blog Post -->
+    <div class="card mb-4" id="word-{{ w.pk }}">
+        {% if w.head_image %}
+            <img class="card-img-top" src="{{ w.head_image.url }}" alt="{{ w }} head image">
+        {% else %}
+            <img class="card-img-top" src="https://picsum.photos/seed/{{ w.id }}/800/200" alt="random_image">
+        {% endif %}
+
+        <div class="card-body">
+            {% if w.category %}
+            <span class="badge text-bg-secondary">{{ w.category }}</span>
+            {% else %}
+            <span class="badge text-bg-secondary">미분류</span>
+            {% endif %}
+
+            <h2 class="card-title">{{ w.title}}</h2>
+
+            {% if w.hook_text %}
+            <h5 class="text-muted">{{ w.hook_text }}</h5>
+            {% endif %}
+
+            <p class="card-text">{{ w.get_content_markdown | truncatewords_html:45 | safe }}</p>
+
+            {% if w.tags.exists %}
+            <i class="fas fa-tags"></i>
+                {% for tag in w.tags.iterator %}
+                <a href="{{ tag.get_absolute_url }}"><span class="badge rounded-pill text-bg-light">{{ tag }}</span></a>
+                {% endfor %}
+                <br/>
+                <br/>
+            {% endif %}
+
+            <a href="{{ w.get_absolute_url }}" class="btn btn-secondary">Read More &rarr;</a>
+        </div>
+
+        <div class="card-footer text-muted">
+            Posted on {{ w.created_at}} by
+            <a href="#">{{ w.author | upper }}</a>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <h3>아직 게시물이 없습니다.</h3>
+{% endif %}
+
+    {% if is_paginated %}
+        <!-- Pagination -->
+        <ul class="pagination justify-content-center mb-4">
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">&larr; Older</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">&larr; Older</a>
+                </li>
+            {% endif %}
+
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Newer &rarr;</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Newer &rarr;</a>
+                </li>
+            {% endif %}
+        </ul>
+    {% endif %}
+
+{% endblock %}
