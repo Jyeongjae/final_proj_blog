@@ -181,3 +181,12 @@ class PostSearch(PostList):
         q = self.kwargs['q']
         context['search_info'] = f'Search: {q}'
         return context
+
+
+def post_detail(request, pk):
+    post = get_object_or_404(Post, id=pk)
+
+    post.view_count += 1
+    post.save()
+
+    return render(request, 'blog/post_detail.html', {'post':post})

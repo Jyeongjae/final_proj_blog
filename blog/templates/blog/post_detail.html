@@ -6,7 +6,10 @@
     {{ post.title }} - Blog
 {% endblock %}
 
+{{model.update_counter}}
+
 {% block main_area %}
+
   <div id="post-area">
 
         {% if post.category %}
@@ -41,6 +44,8 @@
         {% else %}
           <img class="img-fluid rounded" src="https://picsum.photos/seed/{{ post.id }}/800/200" alt="random_image">
         {% endif %}
+
+        <p>조회수: {{ post.view_count }}</p>
 
         <hr>
         <!-- Post Content -->
