@@ -11,9 +11,10 @@ from blog.forms import CommentForm
 class WordList(ListView):
     model = Word
     ordering = '-pk'
+    paginate_by = 5
 
     def get_context_data(self, **kwargs):
-        context = super(WordList, self).get_context_data()
+        context = super(WordList, self).get_context_data(**kwargs)
         context['categories'] = Word_Category.objects.all()
         context['no_category_post_count'] = Word.objects.filter(category=None).count()
         context['tags'] = Word_Tag.objects.all()

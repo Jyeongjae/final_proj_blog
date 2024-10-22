@@ -12,7 +12,7 @@
 
 
                 <h1>
-                    Blog
+                    Post
                     {% if search_info %}<small class="text-muted">{{ search_info }}</small>{% endif %}
                     {% if category %}<span class="badge text-bg-secondary">{{ category }}</span>{% endif %}
                     {% if tag %}<span class="badge rounded-pill text-bg-light"><i class="fas fa-tags"></i>{{ tag }} </span>{% endif %}
@@ -61,28 +61,48 @@
                 <h3>아직 게시물이 없습니다.</h3>
                 {% endif %}
 
-    {% if is_paginated %}
-        <!-- Pagination -->
-        <ul class="pagination justify-content-center mb-4">
-            {% if page_obj.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">&larr; Older</a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
-                    <a class="page-link" href="#">&larr; Older</a>
-                </li>
-            {% endif %}
+{% if is_paginated %}
+    <!-- Pagination -->
+    <ul class="pagination justify-content-center mb-4">
 
-            {% if page_obj.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Newer &rarr;</a>
+        <!-- Newer 버튼 (이전 페이지로 이동) -->
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&larr;</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#">&larr;</a>
+            </li>
+        {% endif %}
+
+        <!-- 페이지 번호 표시 (최대 5개) -->
+        {% for num in paginator.page_range %}
+            {% if page_obj.number == num %}
+                <!-- 현재 페이지 -->
+                <li class="page-item active">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
                 </li>
-            {% else %}
-                <li class="page-item disabled">
-                    <a class="page-link" href="#">Newer &rarr;</a>
+            {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                <!-- 근처의 페이지 (현재 페이지 앞뒤 2개씩) -->
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
                 </li>
             {% endif %}
-        </ul>
-    {% endif %}
+        {% endfor %}
+
+        <!-- Older 버튼 (다음 페이지로 이동) -->
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">&rarr;</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#">&rarr;</a>
+            </li>
+        {% endif %}
+    </ul>
+{% endif %}
+
+
 {% endblock %}

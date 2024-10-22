@@ -1,3 +1,5 @@
+from xml.sax.handler import property_encoding
+
 from django.db import models
 from django.contrib.auth.models import User
 from markdownx.models import MarkdownxField
@@ -78,6 +80,11 @@ class Post(models.Model):
 
     def get_content_markdown(self):
         return markdown(self.content)
+
+    @property
+    def update_count(self):
+        self.view_count += 1
+        self.save()
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)

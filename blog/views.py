@@ -14,7 +14,7 @@ class PostList(ListView):
     paginate_by = 5
 
     def get_context_data(self, **kwargs):
-        context = super(PostList, self).get_context_data()
+        context = super(PostList, self).get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
         context['comment_form'] = CommentForm
@@ -183,10 +183,4 @@ class PostSearch(PostList):
         return context
 
 
-def post_detail(request, pk):
-    post = get_object_or_404(Post, id=pk)
 
-    post.view_count += 1
-    post.save()
-
-    return render(request, 'blog/post_detail.html', {'post':post})

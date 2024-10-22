@@ -1,4 +1,4 @@
-body {
+.container {
     background: url('/static/single_pages/images/Blue-whale.jpg') no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
