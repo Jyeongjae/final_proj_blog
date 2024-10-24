@@ -14,7 +14,7 @@
 
 </head>
 
-<body>
+<body style="padding-bottom: 200px; background-color: #f4f4f4; color: #333;">
 
 {% include 'blog/navbar.html' %}
 
@@ -29,7 +29,7 @@
                 </p>
             </div>
             <div class="col-lg-4">
-                <img class="img-fluid rounded-circle shadow" src="{% static 'single_pages/images/정ai.png' %}" alt="정수빈 이미지" style="max-height: 300px;">
+                <img class="img-fluid rounded-circle shadow" src="{% static 'single_pages/images/정수빈.png' %}" alt="정수빈 이미지" style="max-height: 300px;">
             </div>
         </div>
     </div>
@@ -38,16 +38,16 @@
 <section class="bg-light py-5">
     <div class="container">
         <div class="text-center mb-4">
-            <h1 class="display-4">PORTFOLIO</h1>
-            <p class="lead">저의 다양한 프로젝트를 소개합니다.</p>
+            <h1 class="display-4">about me</h1>
+            <p class="lead">저에 대해서 자세히 소개할게요.</p>
         </div>
         <div class="row">
             <div class="col-lg-4 mb-4">
                 <div class="card shadow">
-                    <img class="card-img-top" src="{% static 'single_pages/images/정ai.png' %}" alt="PyCon 2017 이미지">
+                    <img class="card-img-top" src="{% static 'single_pages/images/교생.webp' %}" alt="">
                     <div class="card-body">
-                        <h5 class="card-title">파이썬으로 통계업무 자동화하기 [PYCON 2017]</h5>
-                        <p class="card-text">Python, Django, Pandas, python-docx로 통계업무 자동화한 내용을 파이콘에서 발표했습니다.</p>
+                        <h5 class="card-title">제 교생시절 사진이에요!</h5>
+                        <p class="card-text">제가 경북 교대 다닐 때, 대구중학교로 교생 실습을 나갔었어요.</p>
                         <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#pycon2017">자세히 보기</button>
                     </div>
                 </div>
@@ -82,7 +82,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="pycon2017ModalLabel">파이썬으로 통계업무 자동화하기</h5>
+                <h5 class="modal-title" id="pycon2017ModalLabel">교생시절</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -90,10 +90,10 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-lg-7">
-                        <img class="img-fluid" src="{% static 'single_pages/images/Blue-whale.jpg' %}" alt="PyCon 2017 발표 이미지">
+                        <img class="img-fluid" src="{% static 'single_pages/images/교생.webp' %}" alt="PyCon 2017 발표 이미지">
                     </div>
                     <div class="col-lg-5">
-                        <p>Python, Django, Pandas, python-docx로 통계업무 자동화한 내용을 파이콘에서 발표했습니다.</p>
+                        <p>2020년 가을 학기 때 한 학기 동안 교생 실습을 했었어요. 그때부터 학생들을 가르치는 일이 제 적성에 맞다는 것을 깨달았었죠.</p>
                     </div>
                 </div>
             </div>
