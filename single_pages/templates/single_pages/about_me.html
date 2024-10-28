@@ -22,10 +22,13 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8">
-                <h1 class="display-4">안녕하세요. 정수빈(丁秀彬)입니다.</h1>
+                <h3 class="display-4">정수빈(丁秀彬)</h3>
                 <p class="lead mt-3">
-                    경제와 금융지식에 관심이 많아요.<br/>
-                    궁금한 것이 있으면 무엇이든 물어보세요.
+                    나이 : 만 27세<br/>
+                    혈액형 : AB형<br/>
+                    MBTI : ENFJ<br/><br/>
+                    "경제와 금융에 관심이 많아요!"<br/>
+                    "궁금하신 것이 있으면 언제든 물어봐주세요!"
                 </p>
             </div>
             <div class="col-lg-4">
@@ -39,12 +42,12 @@
     <div class="container">
         <div class="text-center mb-4">
             <h1 class="display-4">about me</h1>
-            <p class="lead">저에 대해서 자세히 소개할게요.</p>
+            <p class="lead">저를 소개할게요.</p>
         </div>
         <div class="row">
             <div class="col-lg-4 mb-4">
                 <div class="card shadow">
-                    <img class="card-img-top" src="{% static 'single_pages/images/교생.webp' %}" alt="">
+                    <img class="card-img-top" src="{% static 'single_pages/images/교생생활.png' %}" alt="">
                     <div class="card-body">
                         <h5 class="card-title">제 교생시절 사진이에요!</h5>
                         <p class="card-text">제가 경북 교대 다닐 때, 대구중학교로 교생 실습을 나갔었어요.</p>
@@ -54,20 +57,20 @@
             </div>
             <div class="col-lg-4 mb-4">
                 <div class="card shadow">
-                    <img class="card-img-top" src="{% static 'single_pages/images/정ai.png' %}" alt="인프런 강의 이미지">
+                    <img class="card-img-top" src="{% static 'single_pages/images/취미2.png' %}" alt="인프런 강의 이미지">
                     <div class="card-body">
-                        <h5 class="card-title">파이썬 사용자를 위한 웹개발 입문 A to Z Django + Bootstrap</h5>
-                        <p class="card-text">파이썬 웹개발에 대한 인프런 동영상 강의입니다.</p>
+                        <h5 class="card-title">제 취미는 러닝이에요!</h5>
+                        <p class="card-text">제 강아지 코코도 저와 함께 뛰는 걸 좋아해요.</p>
                         <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#inflearn_django2">자세히 보기</button>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 mb-4">
                 <div class="card shadow">
-                    <img class="card-img-top" src="{% static 'single_pages/images/정ai.png' %}" alt="업무자동화 강의 이미지">
+                    <img class="card-img-top" src="{% static 'single_pages/images/봉사.png' %}" alt="업무자동화 강의 이미지">
                     <div class="card-body">
-                        <h5 class="card-title">직장인을 위한 프로그래밍 입문과 업무자동화 활용</h5>
-                        <p class="card-text">파이썬 업무자동화에 대한 인프런 동영상 강의입니다.</p>
+                        <h5 class="card-title">봉사활동 사진이에요!</h5>
+                        <p class="card-text">여유가 있는 주말에는 경북보육원에 봉사활동을 다녀요.</p>
                         <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#automation_python">자세히 보기</button>
                     </div>
                 </div>
@@ -90,7 +93,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-lg-7">
-                        <img class="img-fluid" src="{% static 'single_pages/images/교생.webp' %}" alt="PyCon 2017 발표 이미지">
+                        <img class="img-fluid" src="{% static 'single_pages/images/교생생활.png' %}" alt="PyCon 2017 발표 이미지">
                     </div>
                     <div class="col-lg-5">
                         <p>2020년 가을 학기 때 한 학기 동안 교생 실습을 했었어요. 그때부터 학생들을 가르치는 일이 제 적성에 맞다는 것을 깨달았었죠.</p>
@@ -109,7 +112,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="inflearnDjangoModalLabel">파이썬 사용자를 위한 웹개발 입문 A to Z Django + Bootstrap</h5>
+                <h5 class="modal-title" id="inflearnDjangoModalLabel">취미</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -117,11 +120,10 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-lg-7">
-                        <img class="img-fluid" src="{% static 'single_pages/images/Blue-whale.jpg' %}" alt="인프런 강의 이미지">
+                        <img class="img-fluid" src="{% static 'single_pages/images/취미2.png' %}" alt="인프런 강의 이미지">
                     </div>
                     <div class="col-lg-5">
-                        <p>파이썬 초보를 대상으로 한 웹개발 강좌입니다. 인프런에서 서비스하고 있습니다.</p>
-                        <a href="https://www.inflearn.com/courses/your-course-link" class="btn btn-light"><i class="fas fa-chalkboard-teacher"></i> 인프런 강의 보러가기</a>
+                        <p>매일 아침 일찍 일어나 코코와 함께 러닝을 다녀오면, 기분 좋게 하루를 시작할 수 있어요.</p>
                     </div>
                 </div>
             </div>
@@ -137,7 +139,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="automationPythonModalLabel">직장인을 위한 프로그래밍 입문과 업무자동화 활용</h5>
+                <h5 class="modal-title" id="automationPythonModalLabel">봉사활동</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -145,11 +147,10 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-lg-7">
-                        <img class="img-fluid" src="{% static 'single_pages/images/Blue-whale.jpg' %}" alt="업무 자동화 강의 이미지">
+                        <img class="img-fluid" src="{% static 'single_pages/images/봉사.png' %}" alt="업무 자동화 강의 이미지">
                     </div>
                     <div class="col-lg-5">
-                        <p>코딩에 대해 아무것도 모르는 직장인들도 쉽게 프로그래밍의 기본 개념과 문법을 실습을 통해 배우고, 파일 입출력, 엑셀 데이터 처리, MS-word 문서 자동으로 만들기, 그래프 그리기, 웹스크래핑 등을 배웁니다.</p>
-                        <a href="https://www.inflearn.com/courses/your-course-link" class="btn btn-light"><i class="fas fa-chalkboard-teacher"></i> 인프런 강의 보러가기</a>
+                        <p>경북보육원으로 교육봉사를 다니기 시작한지 벌써 1년이 넘었어요. 우리 아이들이 저를 정말 좋아해요.</p>
                     </div>
                 </div>
             </div>
