@@ -13,7 +13,6 @@
 <h1>
     오늘의 단어
     {% if search_info %}<small class="text-muted">{{ search_info }}</small>{% endif %}
-    {% if category %}<span class="badge text-bg-secondary">{{ category }}</span>{% endif %}
     {% if tag %}<span class="badge rounded-pill text-bg-light"><i class="fas fa-tags"></i>{{ tag }}</span>{% endif %}
 </h1>
 
@@ -28,17 +27,8 @@
         {% endif %}
 
         <div class="card-body">
-            {% if w.category %}
-            <span class="badge text-bg-secondary">{{ w.category }}</span>
-            {% else %}
-            <span class="badge text-bg-secondary">미분류</span>
-            {% endif %}
 
             <h2 class="card-title">{{ w.title}}</h2>
-
-            {% if w.hook_text %}
-            <h5 class="text-muted">{{ w.hook_text }}</h5>
-            {% endif %}
 
             <p class="card-text">{{ w.get_content_markdown | truncatewords_html:45 | safe }}</p>
 

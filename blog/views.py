@@ -3,7 +3,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
-from .models import Post, Category, Tag, Comment
+from .models import Post, Tag, Comment
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from .forms import CommentForm
@@ -15,8 +15,6 @@ class PostList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(PostList, self).get_context_data(**kwargs)
-        context['categories'] = Category.objects.all()
-        context['no_category_post_count'] = Post.objects.filter(category=None).count()
         context['comment_form'] = CommentForm
         return context
 
@@ -26,14 +24,12 @@ class PostDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PostDetail, self).get_context_data()
-        context['categories'] = Category.objects.all()
-        context['no_category_post_count'] = Post.objects.filter(category=None).count()
         context['comment_form'] = CommentForm
         return context
 
 class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Post
-    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category']
+    fields = ['title', 'content', 'head_image']
 
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.is_staff
@@ -64,7 +60,7 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 class PostUpdate(LoginRequiredMixin, UpdateView):
     model = Post
-    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category']
+    fields = ['title', 'content', 'head_image']
 
     template_name = 'blog/post_update_form.html'
 
@@ -99,38 +95,6 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
                     tag.save()
                 self.object.tags.add(tag)
         return response
-
-def category_page(request, slug):
-    if slug == 'no_category':
-        category = '미분류'
-        post_list = Post.objects.filter(category=None)
-    else:
-        category = Category.objects.get(slug=slug)
-        post_list = Post.objects.filter(category=category)
-    return render(
-        request,
-        'blog/post_list.html',
-        {
-            'post_list': post_list,
-            'categories': Category.objects.all(),
-            'no_category_post_count': Post.objects.filter(category=None).count(),
-            'category': category,
-        }
-    )
-
-def tag_page(request, slug):
-    tag = Tag.objects.get(slug=slug)
-    post_list = tag.post_set.all()
-    return render(
-        request,
-        'blog/post_list.html',
-        {
-            'post_list': post_list,
-            'tag': tag,
-            'categories': Category.objects.all(),
-            'no_category_post_count': Post.objects.filter(category=None).count(),
-        }
-    )
 
 def new_comment(request, pk):
     if request.user.is_authenticated:

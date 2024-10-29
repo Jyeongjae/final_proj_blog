@@ -22,46 +22,17 @@ class Word_Tag(models.Model):
     def get_absolute_url(self):
         return f'/today_word/tag/{self.slug}/'
 
-class Category(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    slug = models.SlugField(max_length=200, unique=True, allow_unicode=True)
-
-    def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return f'/blog/category/{self.slug}/'
-
-    class Meta:
-        verbose_name_plural = 'categories'
-
-class Word_Category(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    slug = models.SlugField(max_length=200, unique=True, allow_unicode=True)
-
-    def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return f'/today_word/category/{self.slug}/'
-
-    class Meta:
-        verbose_name_plural = 'word_categories'
-
 class Post(models.Model):
     title = models.CharField(max_length=30)
-    hook_text = models.CharField(max_length=100, blank=True)
     content = MarkdownxField()
 
     head_image = models.ImageField(upload_to='blog/images/%Y/%m/%d/', blank=True)
-    file_upload = models.FileField(upload_to='blog/files/%Y/%m/%d/', blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
 
-    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
     tags = models.ManyToManyField(Tag, blank=True)
 
     view_count = models.PositiveIntegerField(default=0)
@@ -103,18 +74,15 @@ class Comment(models.Model):
 
 class Word(models.Model):
     title = models.CharField(max_length=30)
-    hook_text = models.CharField(max_length=100, blank=True)
     content = MarkdownxField()
 
     head_image = models.ImageField(upload_to='today_word/images/%Y/%m/%d/', blank=True)
-    file_upload = models.FileField(upload_to='today_word/files/%Y/%m/%d/', blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
 
-    category = models.ForeignKey(Word_Category, null=True, blank=True, on_delete=models.SET_NULL)
     tags = models.ManyToManyField(Word_Tag, blank=True)
 
     def __str__(self):

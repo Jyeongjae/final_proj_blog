@@ -51,20 +51,10 @@
             </div>
 
             <!-- Categories Widget -->
-            <div class="card my-4 sticky-widget" id="categories-card">
+            <div class="card my-4 sticky-widget" id="">
                 <h5 class="card-header">Blog Categories</h5>
                 <div class="card-body">
                     <div class="row">
-                        <ul>
-                            {% for category in categories %}
-                                <li style="margin-left: 20px;">
-                                    <a href="{{ category.get_absolute_url }}">{{ category }}</a>
-                                </li>
-                            {% endfor %}
-                            <li style="margin-left: 20px;">
-                                <a href="/blog/category/no_category/">미분류</a>
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </div>

@@ -8,12 +8,6 @@
 
     <div id="post-area">
 
-        {% if word.category %}
-            <span class="badge text-bg-secondary">{{ word.category }}</span>
-        {% else %}
-            <span class="badge text-bg-secondary">미분류</span>
-        {% endif %}
-
         {% if user.is_authenticated and user == word.author %}
             <div style="text-align: right;">
                 <a href="/today_word/update_post/{{ word.pk }}/" class="btn btn-secondary"><i class="fas fa-pen"></i>&nbsp;&nbsp;Edit Word</a>
@@ -22,8 +16,6 @@
 
         <!-- Title -->
         <h1 class="mt-4">{{ word.title }}</h1>
-        <h5 class="text-muted">{{ word.hook_text }}</h5>
-
         <!-- Author -->
         <p class="lead">
           by
@@ -54,21 +46,6 @@
             <br/>
         {% endif %}
 
-        {% if word.file_upload %}
-                <a href="{{ word.file_upload.url }}" class="btn btn-outline-dark" role="button" download>
-                    Download:
-                    {% if word.get_file_ext == 'csv' %}
-                        <i class="fas fa-file-csv"></i>
-                    {% elif word.get_file_ext == 'xlsx' or word.get_file_ext == 'xls' %}
-                        <i class="fas fa-file-excel"></i>
-                    {% elif word.get_file_ext == 'docx' or word.get_file_ext == 'doc' %}
-                        <i class="fas fa-file-word"></i>
-                    {% else %}
-                        <i class="far fa-file"></i>
-                    {% endif %}
-                    {{ word.get_file_name }}
-                </a>
-        {% endif %}
         <hr>
     </div>
 

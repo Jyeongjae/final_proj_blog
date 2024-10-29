@@ -14,7 +14,6 @@
                 <h1>
                     Post
                     {% if search_info %}<small class="text-muted">{{ search_info }}</small>{% endif %}
-                    {% if category %}<span class="badge text-bg-secondary">{{ category }}</span>{% endif %}
                     {% if tag %}<span class="badge rounded-pill text-bg-light"><i class="fas fa-tags"></i>{{ tag }} </span>{% endif %}
                 </h1>
 
@@ -28,16 +27,6 @@
                             <img class="card-img-top" src="https://picsum.photos/seed/{{ p.id }}/800/200" alt="random_image">
                         {% endif %}
                         <div class="card-body">
-                            {% if p.category %}
-                                <span class="badge text-bg-secondary">{{ p.category }}</span>
-                            {% else %}
-                                <span class="badge text-bg-secondary">미분류</span>
-                            {% endif %}
-
-                            <h2 class="card-title">{{ p.title}}</h2>
-                            {% if p.hook_text %}
-                                <h5 class="text-muted">{{ p.hook_text }}</h5>
-                            {% endif %}
                             <p class="card-text">{{ p.get_content_markdown | truncatewords_html:45 | safe }}</p>
 
                             {% if p.tags.exists %}

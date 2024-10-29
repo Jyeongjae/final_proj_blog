@@ -53,16 +53,6 @@
                 <h5 class="card-header">Word Categories</h5>
                 <div class="card-body">
                     <div class="row">
-                        <ul>
-                            {% for category in categories %}
-                                <li style="margin-left: 20px;">
-                                <a href="{{ category.get_absolute_url }}">{{ category }}</a>
-                                </li>
-                            {% endfor %}
-                            <li style="margin-left: 20px;">
-                                <a href="/today_word/category/no_category/">미분류</a>
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </div>

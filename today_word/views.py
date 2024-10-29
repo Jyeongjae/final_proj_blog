@@ -3,7 +3,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
-from blog.models import Word, Word_Category, Word_Tag
+from blog.models import Word, Word_Tag
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from blog.forms import CommentForm
@@ -15,8 +15,6 @@ class WordList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(WordList, self).get_context_data(**kwargs)
-        context['categories'] = Word_Category.objects.all()
-        context['no_category_post_count'] = Word.objects.filter(category=None).count()
         context['tags'] = Word_Tag.objects.all()
         return context
 
@@ -25,14 +23,13 @@ class WordDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(WordDetail, self).get_context_data()
-        context['categories'] = Word_Category.objects.all()
         context['no_category_post_count'] = Word.objects.filter(category=None).count()
         context['tags'] = Word_Tag.objects.all()
         return context
 
 class WordCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Word
-    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category']
+    fields = ['title', 'content']
 
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.is_staff
@@ -63,7 +60,7 @@ class WordCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 class WordUpdate(LoginRequiredMixin, UpdateView):
     model = Word
-    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category']
+    fields = ['title', 'content', 'head_image']
 
     template_name = 'blog/word_update_form.html'
 
@@ -98,38 +95,6 @@ class WordUpdate(LoginRequiredMixin, UpdateView):
                     tag.save()
                 self.object.tags.add(tag)
         return response
-
-def category_page(request, slug):
-    if slug == 'no_category':
-        category = '미분류'
-        word_list = Word.objects.filter(category=None)
-    else:
-        category = Word_Category.objects.get(slug=slug)
-        word_list = Word.objects.filter(category=category)
-    return render(
-        request,
-        'blog/word_list.html',
-        {
-            'word_list': word_list,
-            'categories': Word_Category.objects.all(),
-            'no_category_post_count': Word.objects.filter(category=None).count(),
-            'category': category,
-        }
-    )
-
-def tag_page(request, slug):
-    tag = Word_Tag.objects.get(slug=slug)
-    post_list = Word.objects.filter(tags=tag)
-    return render(
-        request,
-        'blog/word_list.html',
-        {
-            'word_list': post_list,
-            'tag': tag,
-            'categories': Word_Category.objects.all(),
-            'no_category_post_count': Word.objects.filter(category=None).count(),
-        }
-    )
 
 class WordSearch(WordList):
     paginate_by = None
