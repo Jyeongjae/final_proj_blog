@@ -108,3 +108,15 @@ class WordSearch(WordList):
         q = self.kwargs['q']
         context['search_info'] = f'Search: {q}'
         return context
+
+def tag_page(request, slug):
+    tag = Word_Tag.objects.get(slug=slug)
+    post_list = Word.objects.filter(tags=tag)
+    return render(
+        request,
+        'blog/word_list.html',
+        {
+            'word_list': post_list,
+            'tag': tag,
+        }
+    )

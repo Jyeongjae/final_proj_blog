@@ -13,4 +13,6 @@ urlpatterns = [
     path('<int:pk>/', views.PostDetail.as_view()),
     path('accounts/', include('allauth.urls')),
     path('', views.PostList.as_view()),
+    path('tag/<str:slug>/', views.tag_page),
+
 ]
