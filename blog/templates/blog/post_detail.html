@@ -36,8 +36,6 @@
           <img class="img-fluid rounded" src="https://picsum.photos/seed/{{ post.id }}/800/200" alt="random_image">
         {% endif %}
 
-        <p>조회수: {{ post.view_count }}</p>
-
         <hr>
         <!-- Post Content -->
         <p>{{ post.get_content_markdown | safe }}</p>
@@ -57,6 +55,11 @@
   <div id="comment-area">
         <!-- Comments Form -->
         <div class="card my-4">
+          <style>
+              #comment-form textarea {
+              height: 100px; /* 원하는 높이로 조절 */
+              }
+          </style>
           <h5 class="card-header">Leave a Comment:</h5>
           <div class="card-body">
             {% if user.is_authenticated %}
