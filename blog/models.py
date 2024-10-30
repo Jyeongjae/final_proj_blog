@@ -76,8 +76,6 @@ class Word(models.Model):
     title = models.CharField(max_length=30)
     content = MarkdownxField()
 
-    head_image = models.ImageField(upload_to='today_word/images/%Y/%m/%d/', blank=True)
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

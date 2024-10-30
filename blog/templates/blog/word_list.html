@@ -20,11 +20,6 @@
     {% for w in word_list %}
     <!-- Blog Post -->
     <div class="card mb-4" id="word-{{ w.pk }}">
-        {% if w.head_image %}
-            <img class="card-img-top" src="{{ w.head_image.url }}" alt="{{ w }} head image">
-        {% else %}
-            <img class="card-img-top" src="https://picsum.photos/seed/{{ w.id }}/800/200" alt="random_image">
-        {% endif %}
 
         <div class="card-body">
 

@@ -23,7 +23,6 @@ class WordDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(WordDetail, self).get_context_data()
-        context['no_category_post_count'] = Word.objects.filter(category=None).count()
         context['tags'] = Word_Tag.objects.all()
         return context
 
@@ -60,7 +59,7 @@ class WordCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 class WordUpdate(LoginRequiredMixin, UpdateView):
     model = Word
-    fields = ['title', 'content', 'head_image']
+    fields = ['title', 'content']
 
     template_name = 'blog/word_update_form.html'
 

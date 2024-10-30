@@ -26,12 +26,6 @@
         <!-- Date/Time -->
         <p>Posted on {{ word.created_at }}</p>
         <hr>
-        <!-- Preview Image -->
-        {% if word.head_image %}
-          <img class="img-fluid rounded" src="{{ word.head_image.url }}" alt="{{ word.title }} head_image">
-        {% else %}
-          <img class="img-fluid rounded" src="https://picsum.photos/seed/{{ word.id }}/800/200" alt="random_image">
-        {% endif %}
 
         <hr>
         <!-- Post Content -->
