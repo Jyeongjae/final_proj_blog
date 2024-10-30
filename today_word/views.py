@@ -8,6 +8,27 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from blog.forms import CommentForm
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .main import generate_response
+
+
+@csrf_exempt
+def generate_content(request):
+    if request.method == 'POST':
+        title = request.POST.get('title', '')
+
+        if title:
+            # generate_response 함수에서 응답을 가져옴
+            response = generate_response(title)
+
+            # response가 AIMessage 객체라면 .content 속성만 추출
+            response_text = response.content if hasattr(response, 'content') else str(response)
+
+            return JsonResponse({'content': response_text})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
 class WordList(ListView):
     model = Word
     ordering = '-pk'
@@ -29,6 +50,7 @@ class WordDetail(DetailView):
 class WordCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Word
     fields = ['title', 'content']
+    template_name = 'today_word/create_new_word.html'  # 생성한 템플릿 파일을 지정
 
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.is_staff
@@ -37,12 +59,9 @@ class WordCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         current_user = self.request.user
         if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):
             form.instance.author = current_user
-            response = super(WordCreate, self).form_valid(form)
-
             tags_str = self.request.POST.get('tags_str')
             if tags_str:
-                tags_str = tags_str.strip()
-                tags_str = tags_str.replace(',', ';')
+                tags_str = tags_str.strip().replace(',', ';')
                 tags_list = tags_str.split(';')
                 for t in tags_list:
                     t = t.strip()
@@ -51,9 +70,7 @@ class WordCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                         tag.slug = slugify(t, allow_unicode=True)
                         tag.save()
                     self.object.tags.add(tag)
-
-            return response
-
+            return super(WordCreate, self).form_valid(form)
         else:
             return redirect('/today_word/')
 

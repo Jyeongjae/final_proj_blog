@@ -2,13 +2,14 @@
 
 {% block main_area %}
 
-{% if user.is_authenticated%}
+{% if user.is_authenticated %}
     {% if user.is_superuser or user.is_staff %}
         <div style="text-align: right;">
-            <a href="/today_word/create_post/" class="btn btn-secondary"><i class="fas fa-pen"></i>&nbsp;&nbsp;New Word</a>
+            <a href="./create_post/" class="btn btn-secondary"><i class="fas fa-pen"></i>&nbsp;&nbsp;New Word</a>
         </div>
     {% endif %}
 {% endif %}
+
 
 <h1>
     오늘의 단어
