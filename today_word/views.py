@@ -59,6 +59,11 @@ class WordCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         current_user = self.request.user
         if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):
             form.instance.author = current_user
+
+            # Save the form to create self.object
+            response = super(WordCreate, self).form_valid(form)
+
+            # Now that self.object is created, you can add tags to it
             tags_str = self.request.POST.get('tags_str')
             if tags_str:
                 tags_str = tags_str.strip().replace(',', ';')
@@ -70,9 +75,11 @@ class WordCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                         tag.slug = slugify(t, allow_unicode=True)
                         tag.save()
                     self.object.tags.add(tag)
-            return super(WordCreate, self).form_valid(form)
+
+            return response
         else:
             return redirect('/today_word/')
+
 
 class WordUpdate(LoginRequiredMixin, UpdateView):
     model = Word
@@ -117,7 +124,7 @@ class WordSearch(WordList):
     def get_queryset(self):
         q = self.kwargs['q']
         post_list = Word.objects.filter(
-            Q(title__contains=q) | Q(tags__name__contains=q)
+            Q(title__contains=q)
         ).distinct()
         return post_list
     def get_context_data(self, **kwargs):
