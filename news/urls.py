@@ -8,6 +8,5 @@ urlpatterns = [
     path('update_post/<int:pk>/', views.NewsUpdate.as_view(), name='news_update'),
     path('search/<str:q>/', views.NewsSearch.as_view(), name='news_search'),
     path('create_post/', views.NewsCreate.as_view(), name='news_create'),
-    path('create_post/generate_content/', views.generate_content, name='generate_content'),
 
 ]

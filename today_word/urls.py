@@ -8,5 +8,5 @@ urlpatterns=[
     path('tag/<str:slug>/', views.tag_page),
     path('<int:pk>/', views.WordDetail.as_view()),
     path('', views.WordList.as_view()),
-    path('create_post/generate_content/', views.generate_content, name='generate_content'),
+
 ]

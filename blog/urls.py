@@ -14,6 +14,5 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('', views.PostList.as_view()),
     path('tag/<str:slug>/', views.tag_page),
-    path('create_post/generate_content/', views.generate_content, name='generate_content'),
 
 ]

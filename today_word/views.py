@@ -10,23 +10,10 @@ from blog.forms import CommentForm
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .main import generate_response
 
 
-@csrf_exempt
-def generate_content(request):
-    if request.method == 'POST':
-        title = request.POST.get('title', '')
 
-        if title:
-            # generate_response 함수에서 응답을 가져옴
-            response = generate_response(title)
 
-            # response가 AIMessage 객체라면 .content 속성만 추출
-            response_text = response.content if hasattr(response, 'content') else str(response)
-
-            return JsonResponse({'content': response_text})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 class WordList(ListView):

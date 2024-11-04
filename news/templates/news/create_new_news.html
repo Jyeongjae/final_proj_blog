@@ -9,7 +9,7 @@
     <label for="id_title">Title*</label>
     <input type="text" id="id_title" name="title" class="form-control" required>
 
-    <button type="button" id="generate-content-btn" class="btn btn-primary mt-2">Generate Content</button>
+
 
     <label for="id_content" class="mt-4">Content*</label>
 
@@ -69,42 +69,6 @@
 
 
 
-<script>
-document.getElementById("generate-content-btn").addEventListener("click", function() {
-    const title = document.getElementById("id_title").value;
-    const csrftoken = '{{ csrf_token }}';
-
-    if (!title) {
-        alert("Please enter a title first.");
-        return;
-    }
-
-    // 로딩 아이콘 표시
-    document.getElementById("loading-spinner").style.display = "block";
-
-    fetch("./generate_content/", {
-        method: "POST",
-        headers: {
-            "X-CSRFToken": csrftoken,
-            "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({title: title})
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.content) {
-            document.getElementById("id_content").value = data.content;
-        } else if (data.error) {
-            alert(data.error);
-        }
-    })
-    .catch(error => console.error("Error:", error))
-    .finally(() => {
-        // 로딩 아이콘 숨기기
-        document.getElementById("loading-spinner").style.display = "none";
-    });
-});
-</script>
 
 
 {% endblock %}
