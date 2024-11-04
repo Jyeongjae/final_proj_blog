@@ -8,11 +8,12 @@ urlpatterns = [
     path('delete_comment/<int:pk>/', views.delete_comment),
     path('update_comment/<int:pk>/', views.CommentUpdate.as_view()),
     path('update_post/<int:pk>/', views.PostUpdate.as_view()),
-    path('create_post/', views.PostCreate.as_view()),
+    path('create_post/', views.PostCreate.as_view(), name='post_create'),
     path('<int:pk>/new_comment/', views.new_comment),
     path('<int:pk>/', views.PostDetail.as_view()),
     path('accounts/', include('allauth.urls')),
     path('', views.PostList.as_view()),
     path('tag/<str:slug>/', views.tag_page),
+    path('create_post/generate_content/', views.generate_content, name='generate_content'),
 
 ]

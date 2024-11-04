@@ -8,6 +8,11 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from .forms import CommentForm
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .main import generate_response
+
+
 class PostList(ListView):
     model = Post
     ordering = '-pk'
@@ -26,37 +31,6 @@ class PostDetail(DetailView):
         context = super(PostDetail, self).get_context_data()
         context['comment_form'] = CommentForm
         return context
-
-class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
-    model = Post
-    fields = ['title', 'content', 'head_image']
-
-    def test_func(self):
-        return self.request.user.is_superuser or self.request.user.is_staff
-
-    def form_valid(self, form):
-        current_user = self.request.user
-        if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):
-            form.instance.author = current_user
-            response = super(PostCreate, self).form_valid(form)
-
-            tags_str = self.request.POST.get('tags_str')
-            if tags_str:
-                tags_str = tags_str.strip()
-                tags_str = tags_str.replace(',', ';')
-                tags_list = tags_str.split(';')
-                for t in tags_list:
-                    t = t.strip()
-                    tag, is_tag_created = Tag.objects.get_or_create(name=t)
-                    if is_tag_created:
-                        tag.slug = slugify(t, allow_unicode=True)
-                        tag.save()
-                    self.object.tags.add(tag)
-
-            return response
-
-        else:
-            return redirect('/blog/')
 
 class PostUpdate(LoginRequiredMixin, UpdateView):
     model = Post
@@ -158,5 +132,51 @@ def tag_page(request, slug):
         }
     )
 
+class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Post
+    fields = ['title', 'content', 'head_image']
+    template_name = 'blog/create_new_post.html'
 
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
+
+    def form_valid(self, form):
+        current_user = self.request.user
+        if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):
+            form.instance.author = current_user
+            response = super(PostCreate, self).form_valid(form)
+
+            tags_str = self.request.POST.get('tags_str')
+            if tags_str:
+                tags_str = tags_str.strip()
+                tags_str = tags_str.replace(',', ';')
+                tags_list = tags_str.split(';')
+                for t in tags_list:
+                    t = t.strip()
+                    tag, is_tag_created = Tag.objects.get_or_create(name=t)
+                    if is_tag_created:
+                        tag.slug = slugify(t, allow_unicode=True)
+                        tag.save()
+                    self.object.tags.add(tag)
+
+            return response
+
+        else:
+            return redirect('/blog/')
+
+
+@csrf_exempt
+def generate_content(request):
+    if request.method == 'POST':
+        title = request.POST.get('title', '')
+
+        if title:
+            # generate_response 함수에서 응답을 가져옴
+            response = generate_response(title)
+
+            # response가 AIMessage 객체라면 .content 속성만 추출
+            response_text = response.content if hasattr(response, 'content') else str(response)
+
+            return JsonResponse({'content': response_text})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 

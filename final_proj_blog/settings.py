@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'single_pages',
     'blog',
     'today_word',
+    'news',
 ]
 
 MIDDLEWARE = [
