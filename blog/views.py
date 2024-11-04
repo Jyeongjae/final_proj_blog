@@ -132,38 +132,63 @@ def tag_page(request, slug):
         }
     )
 
-class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
-    model = Post
-    fields = ['title', 'content', 'head_image']
-    template_name = 'blog/create_new_post.html'
+# class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+#     model = Post
+#     fields = ['title', 'content', 'head_image']
+#     template_name = 'blog/create_new_post.html'
+#
+#     def test_func(self):
+#         return self.request.user.is_superuser or self.request.user.is_staff
+#
+#     def form_valid(self, form):
+#         current_user = self.request.user
+#         if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):
+#             form.instance.author = current_user
+#             response = super(PostCreate, self).form_valid(form)
+#
+#             tags_str = self.request.POST.get('tags_str')
+#             if tags_str:
+#                 tags_str = tags_str.strip()
+#                 tags_str = tags_str.replace(',', ';')
+#                 tags_list = tags_str.split(';')
+#                 for t in tags_list:
+#                     t = t.strip()
+#                     tag, is_tag_created = Tag.objects.get_or_create(name=t)
+#                     if is_tag_created:
+#                         tag.slug = slugify(t, allow_unicode=True)
+#                         tag.save()
+#                     self.object.tags.add(tag)
+#
+#             return response
+#
+#         else:
+#             return redirect('/blog/')
 
-    def test_func(self):
-        return self.request.user.is_superuser or self.request.user.is_staff
+def create_post(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        content = request.POST.get("content")
+        head_image = request.FILES.get("head_image")  # 이미지 파일 가져오기
+        tags_str = request.POST.get("tags_str", "")
 
-    def form_valid(self, form):
-        current_user = self.request.user
-        if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):
-            form.instance.author = current_user
-            response = super(PostCreate, self).form_valid(form)
+        # 새 Post 인스턴스 생성
+        post = Post.objects.create(
+            title=title,
+            content=content,
+            head_image=head_image,  # 이미지 저장
+            author=request.user,
+        )
 
-            tags_str = self.request.POST.get('tags_str')
-            if tags_str:
-                tags_str = tags_str.strip()
-                tags_str = tags_str.replace(',', ';')
-                tags_list = tags_str.split(';')
-                for t in tags_list:
-                    t = t.strip()
-                    tag, is_tag_created = Tag.objects.get_or_create(name=t)
-                    if is_tag_created:
-                        tag.slug = slugify(t, allow_unicode=True)
-                        tag.save()
-                    self.object.tags.add(tag)
+        # 태그 저장
+        if tags_str:
+            tags_list = tags_str.replace(',', ';').split(';')
+            for tag_name in tags_list:
+                tag, _ = Tag.objects.get_or_create(name=tag_name.strip())
+                post.tags.add(tag)
 
-            return response
+        return redirect(post.get_absolute_url())  # 게시물 상세 페이지로 리디렉션
 
-        else:
-            return redirect('/blog/')
-
+    return render(request, "blog/create_new_post.html")
 
 @csrf_exempt
 def generate_content(request):
