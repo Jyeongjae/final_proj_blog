@@ -3,13 +3,11 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
-from .models import Post, Tag, Comment
+from .models import Post, Tag, Comment, News
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from .forms import CommentForm
-
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
 
 
 
@@ -20,6 +18,12 @@ class PostList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(PostList, self).get_context_data(**kwargs)
+        # 오늘 날짜의 뉴스 필터링
+        today = timezone.now().date()
+        today_news = News.objects.filter(created_at__date=today)
+
+        # 템플릿에 전달
+        context['today_news'] = today_news
         context['comment_form'] = CommentForm
         return context
 
@@ -29,6 +33,12 @@ class PostDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PostDetail, self).get_context_data()
+        # 오늘 날짜의 뉴스 필터링
+        today = timezone.now().date()
+        today_news = News.objects.filter(created_at__date=today)
+
+        # 템플릿에 전달
+        context['today_news'] = today_news
         context['comment_form'] = CommentForm
         return context
 
@@ -111,7 +121,7 @@ class PostSearch(PostList):
     def get_queryset(self):
         q = self.kwargs['q']
         post_list = Post.objects.filter(
-            Q(title__contains=q) | Q(tags__name__contains=q)
+            Q(title__contains=q)
         ).distinct()
         return post_list
     def get_context_data(self, **kwargs):
