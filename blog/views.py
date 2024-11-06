@@ -11,7 +11,6 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 
-
 class PostList(ListView):
     model = Post
     ordering = '-pk'
@@ -27,7 +26,6 @@ class PostList(ListView):
         context['today_news'] = today_news
         context['comment_form'] = CommentForm
         return context
-
 
 class PostDetail(DetailView):
     model = Post
