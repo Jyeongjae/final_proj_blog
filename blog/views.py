@@ -131,88 +131,53 @@ class PostSearch(PostList):
         context['search_info'] = f'Search: {q}'
         return context
 
-def tag_page(request, slug):
-    tag = Tag.objects.get(slug=slug)
-    post_list = tag.post_set.all()
-    return render(
-        request,
-        'blog/post_list.html',
-        {
-            'post_list': post_list,
-            'tag': tag,
-        }
-    )
+def generate_unique_slug(name):
+    slug = slugify(name, allow_unicode=True)
+    unique_slug = slug
+    number = 1
+    while Tag.objects.filter(slug=unique_slug).exists():
+        unique_slug = f"{slug}-{number}"
+        number += 1
+    return unique_slug
 
 
-def create_post(request):
-    if request.method == "POST":
-        title = request.POST.get("title")
-        content = request.POST.get("content")
-        head_image = request.FILES.get("head_image")  # 이미지 파일 가져오기
-        tags_str = request.POST.get("tags_str", "")
+class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Post
+    fields = ['title', 'content', 'head_image']
+    template_name = 'blog/create_new_post.html'
 
-        # 새 Post 인스턴스 생성
-        post = Post.objects.create(
-            title=title,
-            content=content,
-            head_image=head_image,  # 이미지 저장
-            author=request.user,
-        )
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
 
-        if tags_str:
-            tags_str = tags_str.strip().replace(',', ';')
-            tags_list = tags_str.split(';')
-            for t in tags_list:
-                t = t.strip()
-                tag, is_tag_created = Tag.objects.get_or_create(name=t)
-                if is_tag_created:
-                    tag.slug = slugify(t, allow_unicode=True)
-                    tag.save()
-                self.object.tags.add(tag)
+    def form_valid(self, form):
+        current_user = self.request.user
+        if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):
+            form.instance.author = current_user
 
-        return redirect(post.get_absolute_url())  # 게시물 상세 페이지로 리디렉션
+            # Save the form to create self.object
+            response = super(PostCreate, self).form_valid(form)
 
-    return render(request, "blog/create_new_post.html")
+            # 태그 추가
+            tags_str = self.request.POST.get('tags_str')
+            if tags_str:
+                tags_str = tags_str.strip().replace(',', ';')
+                tags_list = tags_str.split(';')
+                for t in tags_list:
+                    t = t.strip()
+                    existing_tag = Tag.objects.filter(name=t).first()
+                    if existing_tag:
+                        tag = existing_tag
+                    else:
+                        tag = Tag(name=t)
+                        tag.slug = generate_unique_slug(t)  # 고유 슬러그 생성 함수 사용
+                        tag.save()
+                    self.object.tags.add(tag)
 
-def unique_slug_generator(tag_name):
-    slug = slugify(tag_name, allow_unicode=True)
-    original_slug = slug
-    count = 1
-    while Tag.objects.filter(slug=slug).exists():
-        slug = f"{original_slug}-{count}"
-        count += 1
-    return slug
+            return response
+
+        else:
+            return redirect('/blog/')
 
 
-def create_post(request):
-    if request.method == "POST":
-        title = request.POST.get("title")
-        content = request.POST.get("content")
-        head_image = request.FILES.get("head_image")
-        tags_str = request.POST.get("tags_str", "")
-
-        # 새 Post 인스턴스 생성
-        post = Post.objects.create(
-            title=title,
-            content=content,
-            head_image=head_image,
-            author=request.user,
-        )
-
-        if tags_str:
-            tags_str = tags_str.strip().replace(',', ';')
-            tags_list = tags_str.split(';')
-            for t in tags_list:
-                t = t.strip()
-
-                # 새로운 Tag 인스턴스를 항상 생성하고 고유한 slug 지정
-                slug = unique_slug_generator(t)
-                tag = Tag(name=t, slug=slug)
-                tag.save()  # 고유 slug를 지정한 뒤 저장
-                post.tags.add(tag)  # 태그를 게시물에 추가
-
-        return redirect(post.get_absolute_url())
-
-    return render(request, "blog/create_new_post.html")
 
 
