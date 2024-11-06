@@ -56,8 +56,10 @@ def change_password(request):
 def delete_account(request):
     if request.method == "POST":
         user = request.user
-        user.delete()  # 사용자 삭제
+        user.is_active = False  # 사용자를 비활성화
+        user.save()
         messages.success(request, "회원 탈퇴가 완료되었습니다.")
+        logout(request)  # 로그아웃 처리
         return redirect('/')  # 홈 페이지로 리다이렉트
 
     return render(request, 'common/delete_account.html')
