@@ -174,12 +174,6 @@ def create_post(request):
 
     return render(request, "blog/create_new_post.html")
 
-
-from django.shortcuts import render, redirect
-from django.utils.text import slugify
-from .models import Post, Tag
-
-
 def unique_slug_generator(tag_name):
     slug = slugify(tag_name, allow_unicode=True)
     original_slug = slug
