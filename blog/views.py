@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
 from .models import Post, Tag, Comment, News
 from django.core.exceptions import PermissionDenied
@@ -10,6 +9,17 @@ from .forms import CommentForm
 from django.utils import timezone
 from django.utils.text import slugify
 
+from django.conf import settings
+from django.http import JsonResponse
+from .dalle import save_gen_img, OpenAI, BadRequestError
+import json
+import os
+from dotenv import load_dotenv
+from django.core.files import File
+from urllib.request import urlopen
+from tempfile import NamedTemporaryFile
+
+load_dotenv()
 
 class PostList(ListView):
     model = Post
@@ -152,7 +162,18 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):
             form.instance.author = current_user
 
-            # Save the form to create self.object
+            # hidden input에서 이미지 URL 가져오기
+            generated_image_url = self.request.POST.get('generated_image_url')
+            if generated_image_url:
+                # URL에서 이미지를 열어 임시 파일로 저장한 후 head_image에 첨부
+                img_temp = NamedTemporaryFile(delete=True)
+                img_temp.write(urlopen(generated_image_url).read())
+                img_temp.flush()
+
+                # 파일 이름을 지정하여 저장 (경로를 제거하고 파일명만 사용)
+                file_name = os.path.basename(generated_image_url)
+                form.instance.head_image.save(file_name, File(img_temp), save=False)
+
             response = super(PostCreate, self).form_valid(form)
 
             # 태그 추가
@@ -172,10 +193,20 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
                     self.object.tags.add(tag)
 
             return response
-
         else:
             return redirect('/blog/')
 
+def generate_image(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        txt_response = data.get("txt_response", "")
+        client = OpenAI(api_key=os.getenv("OPENAI_KEY"))
 
+        try:
+            filename = save_gen_img(client, txt_response)
+            file_url = request.build_absolute_uri(os.path.join(settings.MEDIA_URL, 'generated_images', filename))
+        except BadRequestError:
+            filename = save_gen_img(client, "시장 경제 활동")
+            file_url = request.build_absolute_uri(os.path.join(settings.MEDIA_URL, 'generated_images', filename))
 
-
+        return JsonResponse({"filename": filename, "file_url": file_url})
