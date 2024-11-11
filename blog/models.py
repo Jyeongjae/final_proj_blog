@@ -2,6 +2,7 @@ from xml.sax.handler import property_encoding
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdown
 import os
